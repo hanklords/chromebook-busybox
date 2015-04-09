@@ -8,6 +8,19 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
 - https://chromium.googlesource.com/chromiumos/third_party/kernel
 
 
+## ssh keys
+
+Let us ssh into the chromebook in dev mode.
+
+https://chromium.googlesource.com/chromiumos/chromite/+/master/ssh_keys
+
+    ssh -i .ssh/testing_rsa root@chromebook_ip
+
+## dump the partitions
+
+    dd if=/dev/mmcblk0pX of=mmcblk0pX
+
+
 ## vboot_reference
 
 CFLAGS : remove -Werror
@@ -48,11 +61,6 @@ root=/dev/mmcblk0p3
     dd if=kern.bin of=/dev/mmcblk0p2    
     cgpt add -i 2 -S 0 -T 1 -P 5 /dev/mmcblk0
     reboot
-
-## ssh keys
-https://chromium.googlesource.com/chromiumos/chromite/+/master/ssh_keys
-
-ssh -i .ssh/testing_rsa root@...
 
 ## Sysroot
 
