@@ -1,9 +1,11 @@
 # Chromebook minimal busybox installation
 
+Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). This model does not have yet a working SEABIOS version, so we use the chrome normal booting method to boot our own custom kernel.
+
 ## URL
 
-https://chromium.googlesource.com/chromiumos/third_party/bootstub
-https://chromium.googlesource.com/chromiumos/third_party/kernel
+- https://chromium.googlesource.com/chromiumos/third_party/bootstub
+- https://chromium.googlesource.com/chromiumos/third_party/kernel
 
 
 ## vboot_reference
