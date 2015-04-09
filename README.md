@@ -38,34 +38,28 @@ make utils futil cgpt
 
 ## Kernel
 
-    curl -O https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.10.73.tar.xz
-    tar xvf linux-3.10.73.tar.xz 
-    cd linux-3.10.73
+    curl -O https://kernel.org/pub/linux/kernel/v4.x/testing/linux-4.0-rc7.tar.xz
+    tar xvf linux-4.0-rc7.tar.xz
+    cd linux-4.0-rc7
     make mrproper
-    zcat ../../ASUS-C200M/config.gz .config
+    cp ../config-kernel .config
     ARCH=x86_64 make nconfig
     ARCH=x86_64 make -j4
-    
-
-### cmdline
-
-root=/dev/mmcblk0p3
 
 ### Build the kernel partition
+
+    echo 'root=/dev/mmcblk0p3' > cmdline
     futility vbutil_kernel --pack   kern.bin --keyblock key.keyblock --signprivate key.vbprivk --version 1  --config cmdline --vmlinuz linux-4.0-rc7/arch/x86_64/boot/bzImage
-    futility vbutil_kernel --repack kern.bin --keyblock key.keyblock --signprivate key.vbprivk --config cmdline --oldblob ../ASUS-C200M/mmcblk0p4
     scp -i ~/.ssh/testing_rsa kern.bin  root@192.168.0.104:/root
 
 ### Set partition as bootable
 
     dd if=kern.bin of=/dev/mmcblk0p2    
     cgpt add -i 2 -S 0 -T 1 -P 5 /dev/mmcblk0
-    reboot
 
 ## Sysroot
 
     mkdir -p sys-dev/{include,lib} sys/bin
-    
 
 ## Busybox
 
@@ -77,7 +71,7 @@ root=/dev/mmcblk0p3
     strip busybox
     cp busybox ../sys/bin
 
-## Kexec-tools
+## kexec-tools
 
     curl -O https://kernel.org/pub/linux/utils/kernel/kexec/kexec-tools-2.0.9.tar.xz
     tar xvf kexec-tools-2.0.9.tar.xz
@@ -172,3 +166,10 @@ root=/dev/mmcblk0p3
 ## curl
 ## dropbear
 ## flashrom
+
+## Misc commands
+
+### Repack an existing partition
+
+    futility vbutil_kernel --repack kern.bin --keyblock key.keyblock --signprivate key.vbprivk --config cmdline --oldblob mmcblk0pX
+
