@@ -4,7 +4,7 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
 
 ## URL
 
-- https://chromium.googlesource.com/chromiumos/third_party/bootstub
+- ~~https://chromium.googlesource.com/chromiumos/third_party/bootstub~~
 - https://chromium.googlesource.com/chromiumos/third_party/kernel
 
 
