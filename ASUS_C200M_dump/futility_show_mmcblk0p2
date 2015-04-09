@@ -1,0 +1,20 @@
+Kernel partition:        ../../../ASUS-C200M/mmcblk0p2
+Key block:
+  Signature:             ignored
+  Size:                  0x4b8
+  Flags:                 7  !DEV DEV !REC
+  Data key algorithm:    5 RSA2048 SHA512
+  Data key version:      1
+  Data key sha1sum:      1cab1dedc34076b8887c9ebd4e6769eda6c41ed2
+Kernel Preamble:
+  Size:                  0xfb48
+  Header version:        2.1
+  Kernel version:        1
+  Body load address:     0x100000
+  Body size:             0x43b000
+  Bootloader address:    0x537000
+  Bootloader size:       0x4000
+  Flags:                 0x0
+Body verification succeeded.
+Config:
+console= loglevel=7 init=/sbin/init cros_secure oops=panic panic=-1 root=/dev/dm-0 rootwait ro dm_verity.error_behavior=3 dm_verity.max_bios=-1 dm_verity.dev_wait=1 dm="1 vroot none ro 1,0 2506752 verity payload=PARTUUID=%U/PARTNROFF=1 hashtree=PARTUUID=%U/PARTNROFF=1 hashstart=2506752 alg=sha1 root_hexdigest=3b4f724bd473e5da8f837159791c9cbd17e0a0ca salt=7a92f242093c187861ab989a3f9bdeac35080304bddcdddde83da5f0f6b1108b" noinitrd vt.global_cursor_default=0 kern_guid=%U add_efi_memmap boot=local noresume noswap i915.modeset=1 tpm_tis.force=1 tpm_tis.interrupts=0 nmi_watchdog=panic,lapic  

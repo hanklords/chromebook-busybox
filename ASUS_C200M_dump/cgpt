@@ -1,0 +1,46 @@
+sudo cgpt show /dev/mmcblk0
+       start        size    part  contents
+           0           1          PMBR (Boot GUID: 3137F733-3D9B-6748-A3AC-73F9D1AB8F17)
+           1           1          Pri GPT header
+           2          32          Pri GPT table
+     8671232    22073344       1  Label: "STATE"
+                                  Type: Linux data
+                                  UUID: 54146979-EE77-DE42-95F0-3572479B3A6F
+       20480       32768       2  Label: "KERN-A"
+                                  Type: ChromeOS kernel
+                                  UUID: 9492D89C-2D7B-9846-8C18-6C7881E2CEF7
+                                  Attr: priority=2 tries=0 successful=1
+     4476928     4194304       3  Label: "ROOT-A"
+                                  Type: ChromeOS rootfs
+                                  UUID: 31A3A35E-11D0-6741-9014-905F724C0ED1
+       53248       32768       4  Label: "KERN-B"
+                                  Type: ChromeOS kernel
+                                  UUID: 5605981E-6B60-5948-BFD9-394206D66D62
+                                  Attr: priority=1 tries=0 successful=1
+      282624     4194304       5  Label: "ROOT-B"
+                                  Type: ChromeOS rootfs
+                                  UUID: A26A4401-3FB2-A641-81FE-B7C6886C70B6
+       16448           1       6  Label: "KERN-C"
+                                  Type: ChromeOS kernel
+                                  UUID: 283EAAF0-9F5E-5A49-B666-EAB66C7991BA
+                                  Attr: priority=0 tries=15 successful=0
+       16449           1       7  Label: "ROOT-C"
+                                  Type: ChromeOS rootfs
+                                  UUID: 05549856-2AA8-5549-B688-A18225A0EB5B
+       86016       32768       8  Label: "OEM"
+                                  Type: Linux data
+                                  UUID: 9DEDFEA3-A717-5247-999F-3B04206131DD
+       16450           1       9  Label: "reserved"
+                                  Type: ChromeOS reserved
+                                  UUID: B057D337-3D06-054D-8BD7-70132E0FB144
+       16451           1      10  Label: "reserved"
+                                  Type: ChromeOS reserved
+                                  UUID: 1445D16C-3F19-4A41-9E94-0AC4C780D3E5
+          64       16384      11  Label: "RWFW"
+                                  Type: ChromeOS firmware
+                                  UUID: 2E4BD6E3-0D73-4C41-8BCB-B17C53DA1063
+      249856       32768      12  Label: "EFI-SYSTEM"
+                                  Type: EFI System Partition
+                                  UUID: 3137F733-3D9B-6748-A3AC-73F9D1AB8F17
+    30777311          32          Sec GPT table
+    30777343           1          Sec GPT header
