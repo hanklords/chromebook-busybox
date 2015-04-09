@@ -4,7 +4,7 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
 
 ## URL
 
-- https://chromium.googlesource.com/chromiumos/third_party/bootstub
+- ~~https://chromium.googlesource.com/chromiumos/third_party/bootstub~~
 - https://chromium.googlesource.com/chromiumos/third_party/kernel
 
 
@@ -38,14 +38,15 @@ make utils futil cgpt
 
 ## Kernel
 
-    curl -O https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.10.73.tar.xz
-    tar xvf linux-3.10.73.tar.xz 
-    cd linux-3.10.73
-    make mrproper
-    zcat ../../ASUS-C200M/config.gz .config
-    ARCH=x86_64 make nconfig
-    ARCH=x86_64 make -j4
-    
+```sh
+curl -O https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.10.73.tar.xz
+tar xvf linux-3.10.73.tar.xz 
+cd linux-3.10.73
+make mrproper
+zcat ../../ASUS-C200M/config.gz .config
+ARCH=x86_64 make nconfig
+ARCH=x86_64 make -j4
+```
 
 ### cmdline
 
