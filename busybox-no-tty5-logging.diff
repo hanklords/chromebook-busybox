@@ -1,0 +1,13 @@
+diff --git a/init/init.c b/init/init.c
+index d99d68c..9d4d2dc 100644
+--- a/init/init.c
++++ b/init/init.c
+@@ -199,7 +199,7 @@ struct init_action {
+ 
+ static struct init_action *init_action_list = NULL;
+ 
+-static const char *log_console = VC_5;
++static const char *log_console = NULL;
+ 
+ enum {
+ 	L_LOG = 0x1,
