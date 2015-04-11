@@ -9,7 +9,7 @@ Let us ssh into the chromebook in dev mode.
 
 https://chromium.googlesource.com/chromiumos/chromite/+/master/ssh_keys
 
-    ssh -i .ssh/testing_rsa root@chromebook_ip
+    ssh -i ~/.ssh/testing_rsa root@chromebook_ip
 
 ## dump the partitions
 
@@ -54,7 +54,12 @@ make utils futil cgpt
 
 ## Sysroot
 
-    mkdir -p sys-dev/{include,lib} sys/bin
+    mkdir -p sys-dev/{include,lib}
+    mkdir -p sys/{bin,dev,etc,lib,mnt,proc,root,sbin,sys,tmp}
+    # TODO copy rcS
+    # TODO fstab
+    # TODO keymap
+    # TODO dhcp
 
 ## Busybox
 
@@ -63,8 +68,7 @@ make utils futil cgpt
     cd busybox-1.23.2
     make menuconfig
     make -j8 CC=musl-gcc
-    strip busybox
-    cp busybox ../sys/bin
+    make CC=musl-gcc CONFIG_PREFIX=../sys install
 
 ## kexec-tools
 
@@ -158,9 +162,47 @@ make utils futil cgpt
     cp build/cgpt/cgpt ../sys/bin
 
 ## e2fs
+
+    curl -O https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.42.12/e2fsprogs-1.42.12.tar.xz
+    tar xvf e2fsprogs-1.42.12.tar.xz
+    cd e2fsprogs-1.42.12
+    CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-static -L$PWD/../sys-dev/lib" ./configure --disable-uuidd --disable-libblkid --disable-libuuid
+    make -j4
+    strip ./misc/mke2fs ./misc/tune2fs ./e2fsck/e2fsck
+    cp ./misc/mke2fs ./misc/tune2fs ./e2fsck/e2fsck ../sys/bin
+
 ## curl
+
+    curl -O http://curl.haxx.se/download/curl-7.41.0.tar.lzma
+    tar xvf curl-7.41.0.tar.lzma
+    cd curl-7.41.0
+    CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os -Wl,-static" LDFLAGS="-L$PWD/../sys-dev/lib" ./configure --with-zlib --disable-verbose --disable-libcurl-option --disable-rtsp --disable-shared --disable-file --disable-ldap --disable-dict --disable-telnet --disable-tftp --disable-pop3 --disable-imap --disable-smtp --disable-gopher
+    make -j4
+    strip src/curl
+    cp src/curl ../sys/bin
+
+## openssl
 ## dropbear
+
+    curl -O https://matt.ucc.asn.au/dropbear/dropbear-2015.67.tar.bz2
+    tar xvf dropbear-2015.67.tar.bz2
+    cd dropbear-2015.67
+    CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-L$PWD/../sys-dev/lib" CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-static -L$PWD/../sys-dev/lib"  ./configure
+    make PROGRAMS="dropbear dbclient" STATIC=1 -j8
+    make PROGRAMS=dropbearkey STATIC=1
+    make PROGRAMS=dropbearconvert STATIC=1
+    strip dropbearmulti dropbearkey dropbearconvert
+    cp dropbearmulti ../sys/bin
+    ln -s dropbearmulti ../sys/bin/dropbear
+    ln -s dropbearmulti ../sys/bin/ssh
+
 ## flashrom
+
+## create filesystem
+
+    mksquashfs  sys sys.sqsh -comp lz4 -all-root -noappend
+    scp -i ~/.ssh/testing_rsa sys.sqsh root@192.168.0.104:/root
+    # dd if=sys.sqsh of=/dev/mmcblk0p3
 
 ## Misc
 
@@ -175,4 +217,11 @@ make utils futil cgpt
 ### Repack an existing partition
 
     futility vbutil_kernel --repack kern.bin --keyblock key.keyblock --signprivate key.vbprivk --config cmdline --oldblob mmcblk0pX
+
+### Connect to the wifi
+
+wpa_passphrase MYSSID passphrase > /tmp/wpa.conf
+wpa_supplicant -B -i interface -c /tmp/wpa.conf
+udhcpc -i wlan0
+
 
