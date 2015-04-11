@@ -1,0 +1,7 @@
+# <file system>        <dir>         <type>    <options>             <dump> <pass>
+
+proc                   /proc         proc      defaults              0      0
+sysfs                  /sys          sysfs     defaults              0      0
+tmpfs                  /dev          tmpfs     size=64k,mode=0755    0      0
+tmpfs                  /tmp          tmpfs     size=1024k,mode=0755  0      0
+
