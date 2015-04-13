@@ -61,6 +61,7 @@ make utils futil cgpt
     # TODO fstab
     # TODO keymap
     # TODO dhcp
+    ln -s /tmp/resolv.conf sys/etc/resolv.conf
 
 ## Busybox
 
