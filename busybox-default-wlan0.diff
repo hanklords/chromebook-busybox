@@ -1,0 +1,31 @@
+diff --git a/networking/udhcp/dhcpc.c b/networking/udhcp/dhcpc.c
+index a34829c..c54f452 100644
+--- a/networking/udhcp/dhcpc.c
++++ b/networking/udhcp/dhcpc.c
+@@ -1155,7 +1155,7 @@ static void client_background(void)
+ //usage:       "	[-oC] [-r IP] [-V VENDOR] [-F NAME] [-x OPT:VAL]... [-O OPT]..."
+ //usage:#define udhcpc_full_usage "\n"
+ //usage:	IF_LONG_OPTS(
+-//usage:     "\n	-i,--interface IFACE	Interface to use (default eth0)"
++//usage:     "\n	-i,--interface IFACE	Interface to use (default wlan0)"
+ //usage:	IF_FEATURE_UDHCP_PORT(
+ //usage:     "\n	-P,--client-port PORT	Use PORT (default 68)"
+ //usage:	)
+@@ -1192,7 +1192,7 @@ static void client_background(void)
+ //usage:	)
+ //usage:	)
+ //usage:	IF_NOT_LONG_OPTS(
+-//usage:     "\n	-i IFACE	Interface to use (default eth0)"
++//usage:     "\n	-i IFACE	Interface to use (default wlan0)"
+ //usage:	IF_FEATURE_UDHCP_PORT(
+ //usage:     "\n	-P PORT		Use PORT (default 68)"
+ //usage:	)
+@@ -1261,7 +1261,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
+ 	/* Default options */
+ 	IF_FEATURE_UDHCP_PORT(SERVER_PORT = 67;)
+ 	IF_FEATURE_UDHCP_PORT(CLIENT_PORT = 68;)
+-	client_config.interface = "eth0";
++	client_config.interface = "wlan0";
+ 	client_config.script = CONFIG_UDHCPC_DEFAULT_SCRIPT;
+ 	str_V = "udhcp "BB_VER;
+ 
