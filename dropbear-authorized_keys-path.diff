@@ -1,0 +1,22 @@
+diff --git a/svr-authpubkey.c b/svr-authpubkey.c
+index 66fe5e5..e9d664b 100644
+--- a/svr-authpubkey.c
++++ b/svr-authpubkey.c
+@@ -203,7 +203,7 @@ static int checkpubkey(unsigned char* algo, unsigned int algolen,
+ 	}
+ 
+ 	/* check file permissions, also whether file exists */
+-	if (checkpubkeyperms() == DROPBEAR_FAILURE) {
++	if (0) {
+ 		TRACE(("bad authorized_keys permissions, or file doesn't exist"))
+ 		goto out;
+ 	}
+@@ -214,7 +214,7 @@ static int checkpubkey(unsigned char* algo, unsigned int algolen,
+ 	/* allocate max required pathname storage,
+ 	 * = path + "/.ssh/authorized_keys" + '\0' = pathlen + 22 */
+ 	filename = m_malloc(len + 22);
+-	snprintf(filename, len + 22, "%s/.ssh/authorized_keys", 
++	snprintf(filename, len + 22, "/etc/authorized_keys", 
+ 				ses.authstate.pw_dir);
+ 
+ 	/* open the file */

@@ -196,6 +196,8 @@ make utils futil cgpt
     cp dropbearmulti ../sys/bin
     ln -s dropbearmulti ../sys/bin/dropbear
     ln -s dropbearmulti ../sys/bin/ssh
+    ./dropbearkey -t ecdsa -f ../sys/etc/ecdsa_host_key
+    cat ~/.ssh/testing_rsa.pub > ../sys/etc/authorized_keys
 
 ## flashrom
 
