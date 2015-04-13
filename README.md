@@ -188,7 +188,7 @@ make utils futil cgpt
     curl -O https://matt.ucc.asn.au/dropbear/dropbear-2015.67.tar.bz2
     tar xvf dropbear-2015.67.tar.bz2
     cd dropbear-2015.67
-    CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-L$PWD/../sys-dev/lib" CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-static -L$PWD/../sys-dev/lib"  ./configure --disable-lastlog --disable-wtmp --disable-syslog --disable-shadow
+    CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-static -L$PWD/../sys-dev/lib" ./configure --disable-lastlog --disable-wtmp --disable-syslog --disable-shadow
     make PROGRAMS="dropbear dbclient scp" MULTI=1 STATIC=1 -j8
     make PROGRAMS=dropbearkey STATIC=1
     make PROGRAMS=dropbearconvert STATIC=1
@@ -202,6 +202,54 @@ make utils futil cgpt
 
 ## flashrom
 
+### libkmod
+
+    curl -O http://ftp.kernel.org/pub/linux/utils/kernel/kmod/kmod-20.tar.xz
+    tar xvf kmod-20.tar.xz
+    cd kmod-20
+    # Remove check for enable static
+    CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-L$PWD/../sys-dev/lib" ./configure  --enable-static --disable-manpages --disable-tools --disable-logging
+    make -j8
+    cp libkmod/libkmod.h ../sys-dev/include
+    cp libkmod/.libs/libkmod.a ../sys-dev/lib
+    
+
+### pciutils
+
+    curl -O http://ftp.kernel.org/pub/software/utils/pciutils/pciutils-3.3.1.tar.xz
+    tar xvf pciutils-3.3.1.tar.xz
+    cd pciutils-3.3.1
+    CC=musl-gcc LDFLAGS="-L$PWD/../sys-dev/lib" make OPT="-Os -I$PWD/../sys-dev/include" DNS=no HWDB=no
+    cp lib/libpci.a ../sys-dev/lib
+    mkdir -p ../sys-dev/include/pci
+    cp lib/{config.h,header.h,pci.h,types.h} ../sys-dev/include/pci
+    
+### dtc
+
+    curl -O https://www.kernel.org/pub/software/utils/dtc/dtc-1.4.1.tar.xz
+    tar xvf dtc-1.4.1.tar.xz
+    cd  dtc-1.4.1
+    CC=musl-gcc make -j8
+    cp libfdt/{fdt.h,libfdt.h,libfdt_env.h} ../sys-dev/include
+    cp libfdt/libfdt.a ../sys-dev/lib
+    
+### flashrom
+
+    git clone https://chromium.googlesource.com/chromiumos/third_party/flashrom
+    cd flashrom
+    CC=musl-gcc CFLAGS="-Dloff_t=off_t -Os" CPPFLAGS=-I$PWD/../sys-dev/include LDFLAGS=-L$PWD/../sys-dev/lib make NOWARNERROR=yes CONFIG_STATIC=yes CONFIG_FT2232_SPI=no
+    strip flashrom
+    cp flashrom ../sys/bin
+
+## dmidecode
+
+    curl -LO http://download.savannah.gnu.org/releases/dmidecode/dmidecode-2.12.tar.bz2
+    tar xvf dmidecode-2.12.tar.bz2
+    cd dmidecode-2.12
+    make -j8 LDFLAGS=-static CC=musl-gcc
+    strip dmidecode
+    cp dmidecode ../sys/bin
+    
 ## create filesystem
 
     mksquashfs  sys sys.sqsh -comp lz4 -all-root -noappend
