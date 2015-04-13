@@ -56,8 +56,8 @@ make utils futil cgpt
 
     mkdir -p sys-dev/{include,lib}
     mkdir -p sys/{bin,dev,etc,lib,mnt,proc,root,sbin,sys,tmp}
-    # TODO copy rcS
-    # TODO fstab
+    cp rcS sys/etc
+    cp fstab sys/etc
     # TODO keymap
     # TODO dhcp
     ln -s /tmp/resolv.conf sys/etc/resolv.conf

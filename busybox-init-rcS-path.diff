@@ -1,0 +1,31 @@
+diff --git a/init/init.c b/init/init.c
+index d99d68c..acc47dd 100644
+--- a/init/init.c
++++ b/init/init.c
+@@ -144,7 +144,7 @@
+ 
+ /* Default sysinit script. */
+ #ifndef INIT_SCRIPT
+-# define INIT_SCRIPT  "/etc/init.d/rcS"
++# define INIT_SCRIPT  "/etc/rcS"
+ #endif
+ 
+ /* Each type of actions can appear many times. They will be
+@@ -1262,7 +1262,7 @@ int init_main(int argc UNUSED_PARAM, char **argv)
+ //usage:	"BusyBox init works just fine without an inittab. If no inittab is found,\n"
+ //usage:	"it has the following default behavior:\n"
+ //usage:	"\n"
+-//usage:	"	::sysinit:/etc/init.d/rcS\n"
++//usage:	"	::sysinit:/etc/rcS\n"
+ //usage:	"	::askfirst:/bin/sh\n"
+ //usage:	"	::ctrlaltdel:/sbin/reboot\n"
+ //usage:	"	::shutdown:/sbin/swapoff -a\n"
+@@ -1339,7 +1339,7 @@ int init_main(int argc UNUSED_PARAM, char **argv)
+ //usage:	"\n"
+ //usage:	"	# This is run first except when booting in single-user mode\n"
+ //usage:	"	#\n"
+-//usage:	"	::sysinit:/etc/init.d/rcS\n"
++//usage:	"	::sysinit:/etc/rcS\n"
+ //usage:	"	\n"
+ //usage:	"	# /bin/sh invocations on selected ttys\n"
+ //usage:	"	#\n"
