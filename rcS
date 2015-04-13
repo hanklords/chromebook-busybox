@@ -2,6 +2,9 @@
 
 mount -a
 
+mkdir /dev/pts
+mount -t devpts none /dev/pts
+
 echo /sbin/mdev > /proc/sys/kernel/hotplug
 mdev -s
 

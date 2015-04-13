@@ -56,7 +56,6 @@ make utils futil cgpt
 
     mkdir -p sys-dev/{include,lib}
     mkdir -p sys/{bin,dev,etc,lib,mnt,proc,root,sbin,sys,tmp}
-    mkdir -p sys/dev/pts
     # TODO copy rcS
     # TODO fstab
     # TODO keymap
