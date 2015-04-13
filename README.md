@@ -189,7 +189,7 @@ make utils futil cgpt
     curl -O https://matt.ucc.asn.au/dropbear/dropbear-2015.67.tar.bz2
     tar xvf dropbear-2015.67.tar.bz2
     cd dropbear-2015.67
-    CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-L$PWD/../sys-dev/lib" CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-static -L$PWD/../sys-dev/lib"  ./configure
+    CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-L$PWD/../sys-dev/lib" CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-static -L$PWD/../sys-dev/lib"  ./configure --disable-lastlog --disable-wtmp --disable-syslog --disable-shadow
     make PROGRAMS="dropbear dbclient scp" MULTI=1 STATIC=1 -j8
     make PROGRAMS=dropbearkey STATIC=1
     make PROGRAMS=dropbearconvert STATIC=1

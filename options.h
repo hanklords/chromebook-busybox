@@ -21,13 +21,13 @@
 
 /* Default hostkey paths - these can be specified on the command line */
 #ifndef DSS_PRIV_FILENAME
-#define DSS_PRIV_FILENAME "/etc/dropbear/dropbear_dss_host_key"
+#define DSS_PRIV_FILENAME "/etc/dss_host_key"
 #endif
 #ifndef RSA_PRIV_FILENAME
-#define RSA_PRIV_FILENAME "/etc/dropbear/dropbear_rsa_host_key"
+#define RSA_PRIV_FILENAME "/etc/rsa_host_key"
 #endif
 #ifndef ECDSA_PRIV_FILENAME
-#define ECDSA_PRIV_FILENAME "/etc/dropbear/dropbear_ecdsa_host_key"
+#define ECDSA_PRIV_FILENAME "/etc/ecdsa_host_key"
 #endif
 
 /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
@@ -41,7 +41,7 @@
  * Both of these flags can be defined at once, don't compile without at least
  * one of them. */
 #define NON_INETD_MODE
-#define INETD_MODE
+//#define INETD_MODE
 
 /* Setting this disables the fast exptmod bignum code. It saves ~5kB, but is
  * perhaps 20% slower for pubkey operations (it is probably worth experimenting
@@ -55,7 +55,7 @@ much traffic. */
 #define DROPBEAR_SMALL_CODE
 
 /* Enable X11 Forwarding - server only */
-#define ENABLE_X11FWD
+//#define ENABLE_X11FWD
 
 /* Enable TCP Fowarding */
 /* 'Local' is "-L" style (client listening port forwarded via server)
@@ -68,8 +68,8 @@ much traffic. */
 #define ENABLE_SVR_REMOTETCPFWD
 
 /* Enable Authentication Agent Forwarding */
-#define ENABLE_SVR_AGENTFWD
-#define ENABLE_CLI_AGENTFWD
+// #define ENABLE_SVR_AGENTFWD
+// #define ENABLE_CLI_AGENTFWD
 
 
 /* Note: Both ENABLE_CLI_PROXYCMD and ENABLE_CLI_NETCAT must be set to
@@ -77,7 +77,7 @@ much traffic. */
 
 /* Allow using -J <proxycommand> to run the connection through a 
    pipe to a program, rather the normal TCP connection */
-#define ENABLE_CLI_PROXYCMD
+// #define ENABLE_CLI_PROXYCMD
 
 /* Enable "Netcat mode" option. This will forward standard input/output
  * to a remote TCP-forwarded connection */
@@ -152,7 +152,7 @@ much traffic. */
    with badly seeded /dev/urandom when systems first boot.
    This also requires a runtime flag "-R". This adds ~4kB to binary size (or hardly 
    anything if dropbearkey is linked in a "dropbearmulti" binary) */
-#define DROPBEAR_DELAY_HOSTKEY
+// #define DROPBEAR_DELAY_HOSTKEY
 
 /* Enable Curve25519 for key exchange. This is another elliptic
  * curve method with good security properties. Increases binary size
@@ -201,7 +201,7 @@ much traffic. */
  * PAM challenge/response.
  * You can't enable both PASSWORD and PAM. */
 
-#define ENABLE_SVR_PASSWORD_AUTH
+// #define ENABLE_SVR_PASSWORD_AUTH
 /* PAM requires ./configure --enable-pam */
 /*#define ENABLE_SVR_PAM_AUTH */
 #define ENABLE_SVR_PUBKEY_AUTH
