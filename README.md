@@ -189,13 +189,14 @@ make utils futil cgpt
     tar xvf dropbear-2015.67.tar.bz2
     cd dropbear-2015.67
     CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-L$PWD/../sys-dev/lib" CC=musl-gcc CFLAGS="-I$PWD/../sys-dev/include -Os" LDFLAGS="-static -L$PWD/../sys-dev/lib"  ./configure
-    make PROGRAMS="dropbear dbclient" STATIC=1 -j8
+    make PROGRAMS="dropbear dbclient scp" MULTI=1 STATIC=1 -j8
     make PROGRAMS=dropbearkey STATIC=1
     make PROGRAMS=dropbearconvert STATIC=1
     strip dropbearmulti dropbearkey dropbearconvert
     cp dropbearmulti ../sys/bin
     ln -s dropbearmulti ../sys/bin/dropbear
     ln -s dropbearmulti ../sys/bin/ssh
+    ln -s dropbearmulti ../sys/bin/scp
     ./dropbearkey -t ecdsa -f ../sys/etc/ecdsa_host_key
     cat ~/.ssh/testing_rsa.pub > ../sys/etc/authorized_keys
 
