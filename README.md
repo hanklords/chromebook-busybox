@@ -36,7 +36,7 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
 ## Sysroot
 
     mkdir -p sys-dev/{include,lib}
-    mkdir -p sys/{bin,dev,etc,lib,mnt,proc,root,sbin,sys,tmp}
+    mkdir -p sys/{bin,boot,dev,etc,lib,mnt,proc,root,sbin,sys,tmp}
     cp rcS sys/etc
     cp fstab sys/etc
     cp udhcpc.sh sys/usr/share
@@ -236,6 +236,108 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
     mksquashfs  sys sys.sqsh -comp lz4 -all-root -noappend
     scp -i ~/.ssh/testing_rsa sys.sqsh root@192.168.0.104:/root
     # dd if=sys.sqsh of=/dev/mmcblk0p3
+    
+## Partitions
+
+partitions 6 and 7 after partitions 8
+partition 3 is data
+
+### Initial state
+
+    cgpt show /dev/mmcblk0 -q | sort
+    
+          64       16384      11  ChromeOS firmware
+       16448           1       6  ChromeOS kernel
+       16449           1       7  ChromeOS rootfs
+       16450           1       9  ChromeOS reserved
+       16451           1      10  ChromeOS reserved
+       
+       # 4028 gap
+       
+       20480       32768       2  ChromeOS kernel
+       53248       32768       4  ChromeOS kernel
+       86016       32768       8  Linux data
+       
+       # 131072 gap at 118784
+       
+      249856       32768      12  EFI System Partition
+      282624     4194304       5  ChromeOS rootfs
+     4476928     4194304       3  ChromeOS rootfs
+     8671232    22073344       1  Linux data
+
+### Partitioning
+
+     cgpt add -i 6 -b 118784 -s 32768 /dev/mmcblk0
+     cgpt add -i 7 -b 151552 -s 32768 /dev/mmcblk0
+     cgpt add -i 3 -t data -l root    /dev/mmcblk0
+     # reboot
+
+### Final state
+
+      cgpt show /dev/mmcblk0 -q | sort
+
+          64       16384      11  ChromeOS firmware
+       16450           1       9  ChromeOS reserved
+       16451           1      10  ChromeOS reserved
+       20480       32768       2  ChromeOS kernel
+       53248       32768       4  ChromeOS kernel
+       86016       32768       8  Linux data
+      118784       32768       6  ChromeOS kernel
+      151552       32768       7  ChromeOS rootfs
+      249856       32768      12  EFI System Partition
+      282624     4194304       5  ChromeOS rootfs
+     4476928     4194304       3  ChromeOS rootfs
+     8671232    22073344       1  Linux data
+
+## Install archlinux
+
+    mkfs.btrfs -f /dev/mmcblk0p3
+    mount /dev/mmcblk0p3 /mnt
+    cd /mnt
+    btrfs subvolume create root
+    btrfs subvolume create home
+    
+    curl -O http://archlinux.mirrors.ovh.net/archlinux/iso/2015.04.01/archlinux-bootstrap-2015.04.01-x86_64.tar.gz
+    tar xvf archlinux-bootstrap-2015.04.01-x86_64.tar.gz
+    rm archlinux-bootstrap-2015.04.01-x86_64.tar.gz
+    
+    # Select a mirror
+    vi root.x86_64/etc/pacman.d/mirrorlist
+    
+    # chroot
+    cp /etc/resolv.conf    root.x86_64/etc/
+    mount -t proc none     root.x86_64/proc/
+    mount --rbind /sys     root.x86_64/sys/
+    mount --rbind /dev     root.x86_64/dev/
+    chroot root.x86_64
+    
+    # This can be very long (not enough entropy ?)
+    pacman-key --init
+    pacman-key --populate archlinux
+    mount -o compress=lzo,subvol=root /dev/mmcblk0p3 /mnt
+    mkdir /mnt/home
+    mount -o compress=lzo,subvol=home /dev/mmcblk0p3 /mnt/home
+    
+### Follow https://wiki.archlinux.org/index.php/Installation_guide#Install_the_base_packages
+
+    # patch pacstrap may be needed
+    pacstrap /mnt base
+    genfstab -p /mnt >> /mnt/etc/fstab
+    arch-chroot /mnt
+    echo chromeos > /etc/hostname
+    ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
+    locale-gen
+    echo KEYMAP=fr-latin1 > /etc/vconsole.conf
+    ln -s /proc/self/fd /dev
+    mkinitcpio -p linux
+    passwd
+
+### restart the system
+
+### Boot into archlinux
+
+    kexec -l /mnt/boot/vmlinuz-linux --initrd=/mnt/boot/initramfs-linux.img --command-line="root=/dev/mmcblk0p3 rootflags=subvol=root"
+    kexec -e
 
 ## Misc
 
