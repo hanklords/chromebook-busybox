@@ -3,23 +3,6 @@
 Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). This model does not have yet a working SEABIOS version, so we use the chrome normal booting method to boot our own custom kernel.
 
 
-## ssh keys
-
-Let us ssh into the chromebook in dev mode.
-
-https://chromium.googlesource.com/chromiumos/chromite/+/master/ssh_keys
-
-    ssh -i ~/.ssh/testing_rsa root@chromebook_ip
-
-## dump the partitions
-
-    dd if=/dev/mmcblk0pX of=mmcblk0pX
-
-
-## vboot_reference
-
-CFLAGS : remove -Werror
-make utils futil cgpt
 
 ## Generate keys
 
@@ -58,8 +41,9 @@ make utils futil cgpt
     mkdir -p sys/{bin,dev,etc,lib,mnt,proc,root,sbin,sys,tmp}
     cp rcS sys/etc
     cp fstab sys/etc
-    # TODO keymap
+    cp udhcpc.sh sys/usr/share
     # TODO dhcp
+    # TODO keymap
     ln -s /tmp/resolv.conf sys/etc/resolv.conf
 
 ## Busybox
@@ -125,7 +109,8 @@ make utils futil cgpt
     strip btrfs mkfs.btrfs
     cp btrfs mkfs.btrfs ../sys/bin
 
-## libnl
+## iw
+### libnl
 
     curl -O http://www.infradead.org/~tgr/libnl/files/libnl-3.2.25.tar.gz
     tar xvf libnl-3.2.25.tar.gz
@@ -135,7 +120,7 @@ make utils futil cgpt
     cp lib/.libs/*.a ../sys-dev/lib/
     cp -a include/netlink ../sys-dev/include/
 
-## iw
+### iw
     curl -O https://www.kernel.org/pub/software/network/iw/iw-4.0.tar.xz
     tar xvf iw-4.0.tar.xz
     cd iw-4.0
@@ -182,7 +167,6 @@ make utils futil cgpt
     strip src/curl
     cp src/curl ../sys/bin
 
-## openssl
 ## dropbear
 
     curl -O https://matt.ucc.asn.au/dropbear/dropbear-2015.67.tar.bz2
@@ -266,14 +250,29 @@ make utils futil cgpt
 - https://chromium.googlesource.com/chromiumos/platform/depthcharge
 - http://review.coreboot.org/p/coreboot.git
 
+
+### Chromeos dev ssh keys
+
+Let us ssh into the chromebook in dev mode.
+
+https://chromium.googlesource.com/chromiumos/chromite/+/master/ssh_keys
+
+    ssh -i ~/.ssh/testing_rsa root@chromebook_ip
+
+### dump the partitions
+
+    dd if=/dev/mmcblk0pX of=mmcblk0pX
+
+### build vboot_reference (futility)
+
+CFLAGS : remove -Werror
+make utils futil cgpt
+
 ### Repack an existing partition
 
     futility vbutil_kernel --repack kern.bin --keyblock key.keyblock --signprivate key.vbprivk --config cmdline --oldblob mmcblk0pX
 
 ### Connect to the wifi
 
-wpa_passphrase MYSSID passphrase > /tmp/wpa.conf
-wpa_supplicant -B -i interface -c /tmp/wpa.conf
-udhcpc -i wlan0
-
-
+    wpa_passphrase MYSSID passphrase > /tmp/wpa.conf
+    udhcpc
