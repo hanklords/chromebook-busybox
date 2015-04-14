@@ -42,7 +42,6 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
     cp rcS sys/etc
     cp fstab sys/etc
     cp udhcpc.sh sys/usr/share
-    # TODO dhcp
     # TODO keymap
     ln -s /tmp/resolv.conf sys/etc/resolv.conf
 
