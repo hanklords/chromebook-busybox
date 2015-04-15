@@ -24,14 +24,14 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
 
 ### Build the kernel partition
 
-    echo 'root=/dev/mmcblk0p3' > cmdline
+    echo 'root=/dev/mmcblk0p7 quiet' > cmdline
     futility vbutil_kernel --pack   kern.bin --keyblock key.keyblock --signprivate key.vbprivk --version 1  --config cmdline --vmlinuz linux-4.0-rc7/arch/x86_64/boot/bzImage
     scp -i ~/.ssh/testing_rsa kern.bin  root@192.168.0.104:/root
 
 ### Set partition as bootable
 
-    dd if=kern.bin of=/dev/mmcblk0p2    
-    cgpt add -i 2 -S 0 -T 1 -P 5 /dev/mmcblk0
+    dd if=kern.bin of=/dev/mmcblk0p6
+    cgpt add -i 6 -S 0 -T 1 -P 5 /dev/mmcblk0
 
 ## Sysroot
 
