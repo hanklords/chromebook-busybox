@@ -289,6 +289,7 @@ partition 3 is data
      4476928     4194304       3  ChromeOS rootfs
      8671232    22073344       1  Linux data
 
+
 ## Install archlinux
 
     mkfs.btrfs -f /dev/mmcblk0p3
@@ -340,6 +341,16 @@ partition 3 is data
     kexec -e
 
 ## Misc
+
+### Remove boot warning screen
+
+#### Remove the write protect screw
+
+![write protect screw](ASUS_C200M_dump/write_protect_screw.jpeg)
+
+#### Write protect
+
+    /usr/share/vboot/bin/set_gbb_flags.sh 0x1
 
 ### URL
 
