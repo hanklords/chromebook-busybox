@@ -24,7 +24,7 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
 
 ### Build the kernel partition
 
-    echo 'root=/dev/mmcblk0p7 quiet' > cmdline
+    echo 'root=PARTUUID=%U/PARTNROFF=1 quiet' > cmdline
     futility vbutil_kernel --pack   kern.bin --keyblock key.keyblock --signprivate key.vbprivk --version 1  --config cmdline --vmlinuz linux-4.0-rc7/arch/x86_64/boot/bzImage
     scp -i ~/.ssh/testing_rsa kern.bin  root@192.168.0.104:/root
 
@@ -42,6 +42,7 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
     cp udhcpc.sh sys/usr/share
     # TODO keymap
     ln -s /tmp/resolv.conf sys/etc/resolv.conf
+    ln -s /proc/mounts sys/etc/mtab
 
 ## Busybox
 
@@ -271,6 +272,14 @@ partition 3 is data
      cgpt add -i 7 -b 151552 -s 32768 /dev/mmcblk0
      cgpt add -i 3 -t data -l root    /dev/mmcblk0
      # reboot
+     
+### Remove unused partitions
+
+    cgpt add -i 9 -t unused /dev/mmcblk0
+    cgpt add -i 10 -t unused /dev/mmcblk0
+    cgpt add -i 11 -t unused /dev/mmcblk0
+    cgpt add -i 12 -t unused /dev/mmcblk0
+    
 
 ### Final state
 
@@ -292,14 +301,14 @@ partition 3 is data
 
 ## Install archlinux
 
-    mkfs.btrfs -f /dev/mmcblk0p3
-    mount /dev/mmcblk0p3 /mnt
+    mkfs.btrfs -f /dev/mmcblk0p11
+    mount /dev/mmcblk0p11 /mnt
     cd /mnt
     btrfs subvolume create root
     btrfs subvolume create home
     
     curl -O http://archlinux.mirrors.ovh.net/archlinux/iso/2015.04.01/archlinux-bootstrap-2015.04.01-x86_64.tar.gz
-    tar xvf archlinux-bootstrap-2015.04.01-x86_64.tar.gz
+    tar xf archlinux-bootstrap-2015.04.01-x86_64.tar.gz
     rm archlinux-bootstrap-2015.04.01-x86_64.tar.gz
     
     # Select a mirror
@@ -315,9 +324,9 @@ partition 3 is data
     # This can be very long (not enough entropy ?)
     pacman-key --init
     pacman-key --populate archlinux
-    mount -o compress=lzo,subvol=root /dev/mmcblk0p3 /mnt
+    mount -o compress=lzo,subvol=root /dev/mmcblk0p11 /mnt
     mkdir /mnt/home
-    mount -o compress=lzo,subvol=home /dev/mmcblk0p3 /mnt/home
+    mount -o compress=lzo,subvol=home /dev/mmcblk0p11 /mnt/home
     
 ### Follow https://wiki.archlinux.org/index.php/Installation_guide#Install_the_base_packages
 

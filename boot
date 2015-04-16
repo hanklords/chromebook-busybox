@@ -1,8 +1,6 @@
 #!/bin/sh
 
-device=/dev/mmcblk0p3
-
-mount -o subvol=boot,ro $device /boot
-kexec -l /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img --command-line="root=$device rootflags=subvol=root"
+mount -r -t ext4 LABEL=boot /boot
+kexec -l /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img --command-line="root=LABEL=root rootflags=subvol=root"
 kexec -e
 
