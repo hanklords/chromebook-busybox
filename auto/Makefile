@@ -1,0 +1,3 @@
+auto:
+clean:
+	$(RM) auto

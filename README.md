@@ -41,6 +41,7 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
     cp fstab sys/etc
     cp udhcpc.sh sys/usr/share
     # TODO keymap
+    # TODO profile
     ln -s /tmp/resolv.conf sys/etc/resolv.conf
     ln -s /proc/mounts sys/etc/mtab
 
@@ -231,6 +232,12 @@ Install a minimal busybox installation on an ASUS C200M Chromebook (Baytrail). T
     make -j8 LDFLAGS=-static CC=musl-gcc
     strip dmidecode
     cp dmidecode ../sys/bin
+    
+## auto
+
+    cd auto
+    CC=musl-gcc LDFLAGS="-s -static" make
+    cp auto ../sys/sbin
     
 ## create filesystem
 
