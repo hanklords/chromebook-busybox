@@ -1,0 +1,65 @@
+device=/dev/mmcblk0
+rootdev=`readlink /dev/root`
+
+if [ "Xmmcblk0p3" == "X$rootdev" ]; then
+    update_kernel_part_index=4
+    current_kernel_part_index=2
+elif [ "Xmmcblk0p5" == "X$rootdev" ]; then
+    update_kernel_part_index=2
+    current_kernel_part_index=4
+else
+    echo error
+    exit 1
+fi
+
+confirm() {                                                              
+    echo cgpt add -i $current_kernel_part_index -S 1 /dev/mmcblk0   
+    echo cgpt prioritize -i $current_kernel_part_index /dev/mmcblk0      
+}
+
+update() {
+    [ ! -f "$1" ] && usage
+
+    kernel_sig=`hexdump -n 8 -e '"%_p"' $1`
+    rootfs_sig=`hexdump -n 4 -e '"%_p"' $1`
+
+    if [ "XCHROMEOS" == "X$kernel_sig" ]; then
+        update_part=/dev/mmcblk0p$update_kernel_part_index
+    elif [ "Xhsqs" == "X$rootfs_sig" ]; then
+        update_part=/dev/mmcblk0p$(($update_kernel_part_index + 1))
+    fi
+
+    current_success=`cgpt show -i $current_kernel_part_index -S $device`
+    if [ "$current_success" -ne 1 ]; then
+        echo Cannot update from an unsuccessful partition
+        exit 1
+    fi
+
+    echo dd if=$1 of=$update_part
+    echo cgpt add -i $update_kernel_part_index -S 0 -T 1 /dev/mmcblk0
+    echo cgpt prioritize -i $update_kernel_part_index /dev/mmcblk0
+}
+
+usage() {
+    echo usage: $0 update file
+    exit 1
+}
+
+case "$1" in
+boot)
+    mount -r -t ext4 LABEL=boot /boot                                                                                     
+    kexec -l /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img --command-line="root=LABEL=root rootflags=subvol=root"
+    kexec -e    
+    ;;
+confirm)
+    confirm
+    ;;
+update)
+    update
+    ;;
+*)
+    usage
+    update $1
+    ;;
+esac
+
