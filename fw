@@ -1,3 +1,5 @@
+#!/bin/sh
+
 device=/dev/mmcblk0
 rootdev=`readlink /dev/root`
 
@@ -13,12 +15,12 @@ else
 fi
 
 confirm() {                                                              
-    echo cgpt add -i $current_kernel_part_index -S 1 /dev/mmcblk0   
-    echo cgpt prioritize -i $current_kernel_part_index /dev/mmcblk0      
+    cgpt add -i $current_kernel_part_index -S 1 /dev/mmcblk0   
+    cgpt prioritize -i $current_kernel_part_index /dev/mmcblk0      
 }
 
 update() {
-    [ ! -f "$1" ] && usage
+    [ -f "$1" ] || usage
 
     kernel_sig=`hexdump -n 8 -e '"%_p"' $1`
     rootfs_sig=`hexdump -n 4 -e '"%_p"' $1`
@@ -27,6 +29,9 @@ update() {
         update_part=/dev/mmcblk0p$update_kernel_part_index
     elif [ "Xhsqs" == "X$rootfs_sig" ]; then
         update_part=/dev/mmcblk0p$(($update_kernel_part_index + 1))
+    else
+        echo "Unknown file type"
+        usage
     fi
 
     current_success=`cgpt show -i $current_kernel_part_index -S $device`
@@ -35,31 +40,40 @@ update() {
         exit 1
     fi
 
-    echo dd if=$1 of=$update_part
-    echo cgpt add -i $update_kernel_part_index -S 0 -T 1 /dev/mmcblk0
-    echo cgpt prioritize -i $update_kernel_part_index /dev/mmcblk0
+    dd if=$1 of=$update_part
+    cgpt add -i $update_kernel_part_index -S 0 -T 1 /dev/mmcblk0
+    cgpt prioritize -i $update_kernel_part_index /dev/mmcblk0
 }
 
 usage() {
-    echo usage: $0 update file
+    echo "Usage:"
+    echo "$0 update file"
+    echo "    Update the kernel or rootfs partition and make it bootable"
+    echo "$0 confirm"
+    echo "    Set the success flag on current kernel partition"
+    echo "$0 boot"
+    echo "    Boot the system"
     exit 1
+}
+
+boot() {
+    mount -r -t ext4 LABEL=boot /boot                                                                                     
+    kexec -l /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img --command-line="root=LABEL=root rootflags=subvol=root"
+    kexec -e    
 }
 
 case "$1" in
 boot)
-    mount -r -t ext4 LABEL=boot /boot                                                                                     
-    kexec -l /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img --command-line="root=LABEL=root rootflags=subvol=root"
-    kexec -e    
+    boot
     ;;
 confirm)
     confirm
     ;;
 update)
-    update
+    update $2
     ;;
 *)
     usage
-    update $1
     ;;
 esac
 
