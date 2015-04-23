@@ -1,5 +1,5 @@
 diff --git a/init/init.c b/init/init.c
-index d99d68c..9d4d2dc 100644
+index acc47dd..cd9d186 100644
 --- a/init/init.c
 +++ b/init/init.c
 @@ -199,7 +199,7 @@ struct init_action {
@@ -11,3 +11,13 @@ index d99d68c..9d4d2dc 100644
  
  enum {
  	L_LOG = 0x1,
+@@ -522,9 +522,6 @@ static pid_t run(const struct init_action *a)
+ 		}
+ 	}
+ 
+-	/* Log the process name and args */
+-	message(L_LOG, "starting pid %d, tty '%s': '%s'",
+-			getpid(), a->terminal, a->command);
+ 
+ 	/* Now run it.  The new program will take over this PID,
+ 	 * so nothing further in init.c should be run. */
